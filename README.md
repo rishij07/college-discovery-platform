@@ -1,6 +1,6 @@
 # 🎓 CollegeFind – College Discovery Platform
 
-A full-stack college discovery platform built with Next.js, Node.js + Express, and PostgreSQL.
+A college discovery and comparison platform built using Next.js, Express, and PostgreSQL.
 
 ## Features
 - 🔍 College Listing with Search + Filters (state, course, fee range)
@@ -118,9 +118,3 @@ college-discovery/
     └── package.json
 ```
 
-## 🎥 Loom Video Tips
-Walk through:
-1. "I chose Track B and picked 3 features: Listing, Detail, and Compare"
-2. Show the search + filter working live
-3. Show comparing 2-3 colleges with the winner highlight
-4. "If I had more time, I'd add auth, predictor, and real-time data"
