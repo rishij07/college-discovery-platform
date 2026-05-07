@@ -1,21 +1,7 @@
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { COLLEGES, College, formatFees } from "./data";
 
-export interface College {
-  id: number;
-  name: string;
-  location: string;
-  state: string;
-  fees_per_year: number;
-  rating: number;
-  courses: string[];
-  placement_percentage: number;
-  avg_package_lpa: number;
-  top_recruiter: string;
-  established: number;
-  type: string;
-  description: string;
-  image_url: string;
-}
+export type { College };
+export { formatFees };
 
 export interface CollegesResponse {
   colleges: College[];
@@ -25,31 +11,70 @@ export interface CollegesResponse {
 }
 
 export async function getColleges(params: Record<string, string> = {}): Promise<CollegesResponse> {
-  const qs = new URLSearchParams(params).toString();
-  const res = await fetch(`${API}/colleges?${qs}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch colleges");
-  return res.json();
+  const { search, location, min_fees, max_fees, course, page = "1", limit = "9" } = params;
+  const pageNum = parseInt(page);
+  const limitNum = parseInt(limit);
+
+  let filtered = [...COLLEGES];
+
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter(
+      c =>
+        c.name.toLowerCase().includes(q) ||
+        c.location.toLowerCase().includes(q)
+    );
+  }
+
+  if (location) {
+    filtered = filtered.filter(c => c.state === location);
+  }
+
+  if (min_fees) {
+    filtered = filtered.filter(c => c.fees_per_year >= parseInt(min_fees));
+  }
+
+  if (max_fees) {
+    filtered = filtered.filter(c => c.fees_per_year <= parseInt(max_fees));
+  }
+
+  if (course) {
+    filtered = filtered.filter(c => c.courses.includes(course));
+  }
+
+  filtered.sort((a, b) => b.rating - a.rating);
+
+  const total = filtered.length;
+  const totalPages = Math.ceil(total / limitNum);
+  const start = (pageNum - 1) * limitNum;
+
+  const colleges = filtered.slice(start, start + limitNum);
+
+  return {
+    colleges,
+    total,
+    page: pageNum,
+    totalPages,
+  };
 }
 
 export async function getCollege(id: string): Promise<College> {
-  const res = await fetch(`${API}/colleges/${id}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("College not found");
-  return res.json();
+  const college = COLLEGES.find(c => c.id === parseInt(id));
+
+  if (!college) {
+    throw new Error("College not found");
+  }
+
+  return college;
 }
 
 export async function compareColleges(ids: number[]): Promise<College[]> {
-  const res = await fetch(`${API}/compare?ids=${ids.join(",")}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to compare");
-  return res.json();
+  return COLLEGES.filter(c => ids.includes(c.id));
 }
 
 export async function getStates(): Promise<string[]> {
-  const res = await fetch(`${API}/states`, { cache: "no-store" });
-  if (!res.ok) return [];
-  return res.json();
-}
+  const states = COLLEGES.map(c => c.state);
+  const unique = states.filter((s, i) => states.indexOf(s) === i);
 
-export function formatFees(fees: number) {
-  if (fees >= 100000) return `₹${(fees / 100000).toFixed(1)}L/yr`;
-  return `₹${(fees / 1000).toFixed(0)}K/yr`;
+  return unique.sort();
 }
