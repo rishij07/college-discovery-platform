@@ -1,3 +1,19 @@
+export interface College {
+  id: number;
+  name: string;
+  location: string;
+  state: string;
+  fees_per_year: number;
+  rating: number;
+  courses: string[];
+  placement_percentage: number;
+  avg_package_lpa: number;
+  top_recruiter: string;
+  established: number;
+  type: string;
+  description: string;
+  image_url: string;
+}
 export const COLLEGES = [
   { id: 1, name: "IIT Bombay", location: "Mumbai", state: "Maharashtra", fees_per_year: 250000, rating: 4.9, courses: ["B.Tech","M.Tech","MBA","PhD"], placement_percentage: 98, avg_package_lpa: 24.5, top_recruiter: "Google", established: 1958, type: "Public", description: "Premier engineering institute and one of India's top technical universities with world-class research facilities.", image_url: "https://images.unsplash.com/photo-1562774053-701939374585?w=800" },
   { id: 2, name: "IIT Delhi", location: "New Delhi", state: "Delhi", fees_per_year: 230000, rating: 4.8, courses: ["B.Tech","M.Tech","MBA","PhD"], placement_percentage: 97, avg_package_lpa: 22.3, top_recruiter: "Microsoft", established: 1961, type: "Public", description: "Top-ranked IIT known for research excellence and strong industry connections in the capital city.", image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800" },
@@ -13,7 +29,6 @@ export const COLLEGES = [
   { id: 12, name: "PSG College of Technology", location: "Coimbatore", state: "Tamil Nadu", fees_per_year: 180000, rating: 4.0, courses: ["B.Tech","M.Tech","MBA"], placement_percentage: 87, avg_package_lpa: 11.2, top_recruiter: "Cognizant", established: 1951, type: "Private", description: "Reputed South Indian engineering college with strong industry ties and consistent placement performance.", image_url: "https://images.unsplash.com/photo-1562774053-701939374585?w=800" },
 ];
 
-export type College = typeof COLLEGES[0];
 
 export function formatFees(fees: number) {
   if (fees >= 100000) return `₹${(fees / 100000).toFixed(1)}L/yr`;
